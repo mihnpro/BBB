@@ -23,20 +23,20 @@ db = DB("./db/users.db")
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    await message.answer("Hello, this is book bot for lessons!")
+    await message.answer("Доброго времени суток, дорогой читатель, это книжный бот!")
     db.create_new_user(message.chat.id)
     kb = [
         [
-            types.KeyboardButton(text="New chapter"),
-            types.KeyboardButton(text="send_book"),
-            types.KeyboardButton(text="Previos chapter"),
+            types.KeyboardButton(text="новая глава"),
+            types.KeyboardButton(text="отправить книгу"),
+            types.KeyboardButton(text="предыдущая глава"),
         ],
     ]
 
     keyboard = types.ReplyKeyboardMarkup(
         keyboard=kb,
         resize_keyboard=True,
-        input_field_placeholder="which way you want to go"
+        input_field_placeholder="куда вы хотите попасть?"
     )
     await message.answer(f"your page is {db.get_status(message.chat.id)}", reply_markup=keyboard)
 
@@ -55,9 +55,9 @@ async def admin(message: types.Message):
     if message.text == "admin":
         temp_super_user = message.chat.id
         accessed = False
-        await message.answer("now send me a password")
+        await message.answer("вы не отправили пароль")
 
-    elif message.text == "send_book":
+    elif message.text == "отправить книгу":
         #status = db.get_status(message.chat.id)
         chapter = read_book(message.chat.id)
         await message.answer(chapter)
@@ -67,19 +67,19 @@ async def admin(message: types.Message):
             accessed = True
             kb = [
                     [
-                    types.KeyboardButton(text="New chapter"),
-                    types.KeyboardButton(text="Previos chapter")
+                    types.KeyboardButton(text="новая глава"),
+                    types.KeyboardButton(text="предыдущая глава")
                     ],
                 ]
             keyboard = types.ReplyKeyboardMarkup(
                 keyboard=kb,
                 resize_keyboard=True,
-                input_field_placeholder="which way you want to go"
+                input_field_placeholder="куда вы хотите попасть?"
             )
-            await message.answer("now you can modify accses to chapters", reply_markup=keyboard)
+            await message.answer("теперь у вас есть доступ к главам", reply_markup=keyboard)
 
-        elif message.text == "New chapter" and accessed and temp_super_user == message.chat.id:
-            await message.answer("new page")
+        elif message.text == "новая глава" and accessed and temp_super_user == message.chat.id:
+            await message.answer("новая страница")
             admin_json["max_chapter"] += 1;
 
             with open("./db/admin_json", 'w') as file:
@@ -88,7 +88,7 @@ async def admin(message: types.Message):
             await message.answer(f"Now max chapter is {admin_json['max_chapter']}")
 
 
-        elif message.text == "Previos chapter" and access and temp_super_user == message.chat.id:
+        elif message.text == "предыдущая глава" and access and temp_super_user == message.chat.id:
             if admin_json["max_chapter"] > 1:
                 admin_json["max_chapter"] -= 1
 
@@ -98,9 +98,9 @@ async def admin(message: types.Message):
                 await message.answer(f"Now max chapter is {admin_json['max_chapter']}")
             else:
                 await message.answer("chapter is already 1")
-    elif message.text == "exit" and message.chat.id == temp_super_user:
+    elif message.text == "выход" and message.chat.id == temp_super_user:
         access = False
-    elif message.text == "Previos chapter":
+    elif message.text == "предыдущая глава":
         status = db.get_status(message.chat.id)
         if status > 1:
             db.change_prev_step(message.chat.id)
@@ -108,13 +108,13 @@ async def admin(message: types.Message):
         else:
             await message.answer("page is already 1")
 
-    elif message.text == "New chapter":
+    elif message.text == "новая глава":
         status = db.get_status(message.chat.id)
         if status <= admin_json["max_chapter"]:
             db.change_next_step(message.chat.id)
             await message.answer(f"now your page is {status + 1}")
         else:
-            await message.answer("sorry, but admin think that you need to just read this page!")
+            await message.answer("извините, но вы еще не прочитали эту главу")
 
 async def main() -> None:
     if TOKEN is not None:
