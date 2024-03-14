@@ -38,7 +38,7 @@ async def command_start_handler(message: Message) -> None:
         resize_keyboard=True,
         input_field_placeholder="куда вы хотите попасть?"
     )
-    await message.answer(f"your page is {db.get_status(message.chat.id)}", reply_markup=keyboard)
+    await message.answer(f"твоя глава {db.get_status(message.chat.id)}", reply_markup=keyboard)
 
 def read_book(id: int):
     status = db.get_status(id)
@@ -85,7 +85,7 @@ async def admin(message: types.Message):
             with open("./db/admin_json", 'w') as file:
                 json_object = json.dumps(admin_json, indent=4)
                 file.write(json_object)
-            await message.answer(f"Now max chapter is {admin_json['max_chapter']}")
+            await message.answer(f"теперь ваша максимальная глава для прочтения {admin_json['max_chapter']}")
 
 
         elif message.text == "предыдущая глава" and access and temp_super_user == message.chat.id:
@@ -95,24 +95,24 @@ async def admin(message: types.Message):
                 with open("./db/admin.json", 'w') as file:
                     json_object = json.dumps(admin_json, indent=4)
                     file.write(json_object)
-                await message.answer(f"Now max chapter is {admin_json['max_chapter']}")
+                await message.answer(f"теперь ваша максимальная глава для прочтения {admin_json['max_chapter']}")
             else:
-                await message.answer("chapter is already 1")
+                await message.answer("ваша глава уже 1")
     elif message.text == "выход" and message.chat.id == temp_super_user:
         access = False
     elif message.text == "предыдущая глава":
         status = db.get_status(message.chat.id)
         if status > 1:
             db.change_prev_step(message.chat.id)
-            await message.answer(f"now your page is {status - 1}")
+            await message.answer(f"теперь ваша глава {status - 1}")
         else:
-            await message.answer("page is already 1")
+            await message.answer("ваша глава уже 1")
 
     elif message.text == "новая глава":
         status = db.get_status(message.chat.id)
         if status <= admin_json["max_chapter"]:
             db.change_next_step(message.chat.id)
-            await message.answer(f"now your page is {status + 1}")
+            await message.answer(f"теперь ваша глава {status + 1}")
         else:
             await message.answer("извините, но вы еще не прочитали эту главу")
 
