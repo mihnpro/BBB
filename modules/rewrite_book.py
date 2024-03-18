@@ -13,3 +13,5 @@ if __name__ == "__main__":
             start = end + 1
             end += 3001
             index += 1
+        with open(f"./../books/chapter/chapter_{index}.txt", 'w', encoding='utf-8') as file:
+            file.write(book[start:len(book)])

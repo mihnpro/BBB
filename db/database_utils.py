@@ -28,18 +28,29 @@ class DB:
         self.exec(f"UPDATE Users SET status = {self.get_status(id) + 1} WHERE id_teleg = {id}")
 
     def create_new_user(self, id: int):
-        self.exec("INSERT INTO Users (status, id_teleg) VALUES (1, 922347990);")
+        try:
+            self.get_status(id)
+        except:
+            self.exec(f"INSERT INTO Users (status, id_teleg) VALUES (1, {id});")
 
     def delete_user(self, id: int):
         self.exec(f"DELETE FROM Users WHERE id_teleg = {id}")
 
+    def user_exist(self, id: int):
+        return self.get_status(id=id)
+    
+    def change_next_five_chapter(self, id: int):
+        self.exec(f"UPDATE Users SET status = {self.get_status(id) + 5} WHERE id_teleg = {id}")
 
+    def chapte_prev_five_chapter(self, id: int):
+        self.exec(f"UPDATE Users SET status = {self.get_status(id) - 5} WHERE id_teleg = {id}")
 if __name__ == "__main__":
     """check if everything is working"""
     db = DB("./users.db")
     #res = db.get_status(922347990)
     #print(res)
-    db.exec("DELETE FROM Users")
+    res = db.user_exist(922347990)
+    print(res)
     #db.delete_user(922347990)
     #db.create_new_user(922347990)
     #res = db.get_status(922347990) 

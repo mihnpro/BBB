@@ -8,7 +8,7 @@ if __name__ == "__main__":
         cur.execute("""
         CREATE TABLE IF NOT EXISTS Users(
         id INTEGER PRIMARY KEY,
-        id_teleg INTEGER NOT NULL,
+        id_teleg INTEGER NOT NULL UNIQUE,
         status INTEGER DEFAULT 1
         )
         """)

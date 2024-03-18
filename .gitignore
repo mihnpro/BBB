@@ -3,3 +3,6 @@ venv
 .env
 *.db
 *.json
+.idea
+
+db/test.py
