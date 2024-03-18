@@ -6,3 +6,5 @@ venv
 .idea
 
 db/test.py
+modules/__pycache__
+db/__pycache__
