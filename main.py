@@ -1,11 +1,12 @@
 import asyncio
 import logging
 import sys
-from os import getenv
+import os 
 import json
 
 from db.database_utils import DB
 import modules.keyboard as kbs
+from db.table_exec import create_db
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router, types
@@ -15,11 +16,14 @@ from aiogram.types import Message
 from aiogram.filters.command import Command
 
 load_dotenv()
-TOKEN = getenv("TOKEN")
+TOKEN = os.getenv("TOKEN")
 #print(TOKEN)
 
 dp = Dispatcher()
-db = DB("./db/users.db")
+
+DB_URL = os.path.abspath("./db/users.db")
+create_db(DB_URL)
+db = DB(DB_URL)
 
 def read_book(id: int):
     status = db.get_status(id)
@@ -29,7 +33,8 @@ def read_book(id: int):
 
 def update_admin_json():
     global admin_json
-    with open("./db/admin.json", "w") as file:
+    global pass_admin
+    with open(path_admin, "w") as file:
         json_object = json.dumps(admin_json, indent=4)
         file.write(json_object)
 
@@ -147,8 +152,17 @@ if __name__ == "__main__":
     temp_super_user = 0
     accessed = False
     admin_json = {}
-    with open("./db/admin.json", 'r') as file:
-        admin_json = json.load(file)
+    path_admin = os.path.abspath("./db/admin.json")
+    if os.path.isfile(path_admin):
+        with open(path_admin, 'r') as file:
+            admin_json = json.load(file)
+    else:
+        pass_admin = os.getenv("password")
+        admin_json = {
+            "max_chapter": 1,
+            "password": pass_admin
+        }
+
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())

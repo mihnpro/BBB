@@ -1,8 +1,7 @@
 import sqlite3
 
-
-if __name__ == "__main__":
-    with sqlite3.connect("users.db") as conn:
+def create_db(url: str):
+    with sqlite3.connect(url) as conn:
         cur = conn.cursor()
         
         cur.execute("""
@@ -13,3 +12,8 @@ if __name__ == "__main__":
         )
         """)
         conn.commit()
+
+
+
+if __name__ == "__main__":
+    create_db("user.db")
