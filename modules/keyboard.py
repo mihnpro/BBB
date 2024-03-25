@@ -18,7 +18,7 @@ default_keyboard = types.ReplyKeyboardMarkup(
 admin_buttons = [
     [
     types.KeyboardButton(text="-5"),
-    types.KeyboardButton(text="выход"),
+    types.KeyboardButton(text="выйти"),
     types.KeyboardButton(text="+5"),
     ],
     [
@@ -32,3 +32,5 @@ admin_keyboard = types.ReplyKeyboardMarkup(
     input_field_placeholder="куда вы хотите попасть?"
     )
 
+exit_buttons = [[Button(text="выйти")]]
+exit_keyboard = types.ReplyKeyboardMarkup(keyboard=exit_buttons, resize_keyboard=True)

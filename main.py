@@ -38,16 +38,16 @@ async def command_start_handler(message: Message) -> None:
     await message.answer("Доброго времени суток, дорогой читатель, это книжный бот!")
     db.create_new_user(message.chat.id)
 
-    await message.answer(f"твоя глава {db.get_status(message.chat.id)}", reply_markup=kbs.default_keyboard)
+    await message.answer(f"Сейчас вы находитесь на {db.get_status(message.chat.id)} главе.", reply_markup=kbs.default_keyboard)
 
 @dp.message(Command("get_chapter"))
 async def get_chapter(message: Message) -> None:
-    await message.answer(f"your chapter is: {db.get_status(message.chat.id)}")
+    await message.answer(f"Сейчас вы находитесь на {db.get_status(message.chat.id)} главе.")
 
 @dp.message(Command("get_max_chapter"))
 async def get_max_chapter(message: Message) -> None:
     global admin_json
-    await message.answer(f"max chapter is {admin_json['max_chapter']}")
+    await message.answer(f"максимальная глава для прочтения - {admin_json['max_chapter']}")
 
 @dp.message()
 async def admin(message: types.Message) -> None:
@@ -58,7 +58,7 @@ async def admin(message: types.Message) -> None:
     if message.text == "admin":
         temp_super_user = message.chat.id
         accessed = False
-        await message.answer("вы не отправили пароль") # now you need to send a password
+        await message.answer("Вам нужно отправить пароль или выйти", reply_markup=kbs.exit_keyboard)
 
     elif message.text == "отправить книгу":
         #status = db.get_status(message.chat.id)
@@ -69,10 +69,10 @@ async def admin(message: types.Message) -> None:
         if message.text == admin_json['password'] and not accessed:
             accessed = True
             await message.answer("теперь у вас есть доступ к главам", reply_markup=kbs.admin_keyboard)
-        elif message.text == "выход" and message.chat.id == temp_super_user:
+        elif message.text == "выйти" and message.chat.id == temp_super_user:
             accessed = False
             temp_super_user = 0
-            await message.answer("exit from admin", reply_markup=kbs.default_keyboard)
+            await message.answer("Вы вышли", reply_markup=kbs.default_keyboard)
         elif accessed and temp_super_user == message.chat.id:
 
             if message.text == ">>":
@@ -80,7 +80,7 @@ async def admin(message: types.Message) -> None:
                 admin_json["max_chapter"] += 1;
 
                 update_admin_json() 
-                await message.answer(f"теперь ваша максимальная глава для прочтения {admin_json['max_chapter']}")
+                await message.answer(f"теперь максимальная глава для прочтения - {admin_json['max_chapter']}")
 
 
             elif message.text == "<<":
@@ -88,48 +88,50 @@ async def admin(message: types.Message) -> None:
                     admin_json["max_chapter"] -= 1
 
                     update_admin_json()
-                    await message.answer(f"теперь ваша максимальная глава для прочтения {admin_json['max_chapter']}")
+                    await message.answer(f"теперь максимальная глава для прочтения - {admin_json['max_chapter']}")
                 else:
-                    await message.answer("ваша глава уже 1")
+                    await message.answer("Вы уже на 1 главе")
 
             elif message.text == "+5":
                 admin_json["max_chapter"] += 5
                 update_admin_json()
-                await message.answer(f"now max chapter is {admin_json['max_chapter']}")
+                await message.answer(f"теперь максимальная глава для прочтения - {admin_json['max_chapter']}")
 
             elif message.text == "-5":
                 if admin_json["max_chapter"] > 5:
                     admin_json["max_chapter"] -= 5
                     update_admin_json()
-                    await message.answer(f"now max chapter is {admin_json['max_chapter']}")
+                    await message.answer(f"теперь максимальная глава для прочтения - {admin_json['max_chapter']}")
                 else:
                     admin_json["max_chapter"] = 1
-                    await message.answer("now max_chapter is 1")
-            elif message.text == "выход":
+                    await message.answer("Вы уже на 1 главе")
+            elif message.text == "выйти":
                 accessed = False
                 temp_super_user = 0
-                await message.answer("exit from admin", reply_markup=kbs.default_keyboard)
+                await message.answer("Вы вышли", reply_markup=kbs.default_keyboard)
         else:
-            await message.answer("exit or type password")
+            await message.answer("Вам нужно отправить пароль или выйти", reply_markup=kbs.exit_keyboard)
 
 
     elif message.text == "<<":
         status = db.get_status(message.chat.id)
         if status > 1:
             db.change_prev_step(message.chat.id)
-            await message.answer(f"теперь ваша глава {status - 1}")
+            await message.answer(f"Сейчас вы находитесь на {status - 1} главе.")
         else:
-            await message.answer("ваша глава уже 1")
+            await message.answer("Вы уже на 1 главе")
 
     elif message.text == ">>":
         status = db.get_status(message.chat.id)
         if status < admin_json["max_chapter"]:
             db.change_next_step(message.chat.id)
-            await message.answer(f"теперь ваша глава {status + 1}")
+            await message.answer(f"Сейчас вы находитесь на {status - 1} главе.")
         else:
             await message.answer("извините, но вы еще не прочитали эту главу")
+    elif message.text == "выйти":
+        await message.answer("Вы вышли", reply_markup=kbs.default_keyboard)
     else:
-        await message.answer("sorry, I can't understand")
+        await message.answer("Извините, я не могу вас понять!")
 
 async def main() -> None:
     if TOKEN is not None:
