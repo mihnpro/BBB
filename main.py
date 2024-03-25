@@ -27,7 +27,7 @@ db = DB(DB_URL)
 
 def read_book(id: int):
     status = db.get_status(id)
-    with open(f"./books/chapter/chapter_{status}.txt", 'r', encoding='utf-8') as file:
+    with open(os.path.abspath(f"./books/chapter/chapter_{status}.txt"), 'r', encoding='utf-8') as file:
         book = file.read()
     return book
 
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         with open(path_admin, 'r') as file:
             admin_json = json.load(file)
     else:
-        pass_admin = os.getenv("password")
+        pass_admin = os.getenv("PASSWORD")
         admin_json = {
             "max_chapter": 1,
             "password": pass_admin
