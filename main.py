@@ -22,7 +22,6 @@ TOKEN = os.getenv("TOKEN")
 dp = Dispatcher()
 
 DB_URL = os.path.abspath("./db/users.db")
-create_db(DB_URL)
 db = DB(DB_URL)
 
 def read_book(id: int):
@@ -157,13 +156,7 @@ if __name__ == "__main__":
         with open(path_admin, 'r') as file:
             admin_json = json.load(file)
     else:
-        pass_admin = os.getenv("PASSWORD")
-        admin_json = {
-            "max_chapter": 1,
-            "password": pass_admin
-        }
-        update_admin_json()
-
+        logging.log(level=logging.WARN, msg="admin_json is not in file")
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
