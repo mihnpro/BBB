@@ -16,4 +16,4 @@ def create_db(url: str):
 
 
 if __name__ == "__main__":
-    create_db("user.db")
+    create_db("users.db")
