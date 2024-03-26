@@ -130,7 +130,7 @@ async def admin(message: types.Message) -> None:
         status = db.get_status(message.chat.id)
         if status < admin_json["max_chapter"]:
             db.change_next_step(message.chat.id)
-            await message.answer(f"Сейчас вы находитесь на {status - 1} главе.")
+            await message.answer(f"Сейчас вы находитесь на {status + 1} главе.")
         else:
             await message.answer("извините, но вы еще не прочитали эту главу")
     elif message.text == "выйти":
@@ -162,6 +162,7 @@ if __name__ == "__main__":
             "max_chapter": 1,
             "password": pass_admin
         }
+        update_admin_json()
 
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
