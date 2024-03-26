@@ -19,10 +19,10 @@ class DB:
             cur = conn.cursor()
             cur.execute(f"SELECT status FROM Users WHERE id_teleg = {id}")
             res = cur.fetchone()
-        if len(res) == 0:
-            self.create_new_user(id)
+        if res is not None:
+            return res[0]
+        else:
             return 1
-        return res[0]
 
     def change_prev_step(self, id: int):
         self.exec(f"UPDATE Users SET status = {self.get_status(id) - 1} WHERE id_teleg = {id}")
