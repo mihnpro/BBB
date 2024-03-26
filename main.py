@@ -6,7 +6,7 @@ import json
 
 from db.database_utils import DB
 import modules.keyboard as kbs
-from db.table_exec import create_db
+from modules.keep_alive import keep_alive
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router, types
@@ -15,6 +15,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.filters.command import Command
 
+keep_alive()
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 #print(TOKEN)
