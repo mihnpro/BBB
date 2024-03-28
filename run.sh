@@ -1,3 +1,4 @@
+#!/bin/bash
 function trap_term() {
 	echo "probgram is wanted to be terminated!"
 }
